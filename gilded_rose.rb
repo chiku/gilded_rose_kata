@@ -27,6 +27,11 @@ module GildedRose
       self
     end
 
+    def normalize
+      @quality = 0 if @quality < 0
+      @quality = 50 if @quality > 50
+    end
+
     def normal? # :TBD:
       false
     end
@@ -47,9 +52,12 @@ module GildedRose
   class NormalItem < Item
     def age
       @sell_in -= 1
-      @quality -= 1 if @sell_in < 0
-      @quality -= 1 if @quality > 0
-
+      if @sell_in > 0
+        @quality -= 1
+      else
+        @quality -= 2
+      end
+      normalize
       self
     end
 
@@ -59,6 +67,19 @@ module GildedRose
   end
 
   class AgedBrie < Item
+    def age
+      @sell_in -= 1
+      if @quality < 50
+        if @sell_in < 0
+          @quality += 2
+        else
+          @quality += 1
+        end
+      end
+      normalize
+      self
+    end
+
     def aged_brie? # :TBD:
       true
     end
@@ -74,6 +95,11 @@ module GildedRose
     def sulfuras? # :TBD:
       true
     end
+
+    def age
+      @quality += 1
+      normalize
+    end
   end
 end
 
@@ -84,15 +110,20 @@ def update_quality(items)
 
             if gr_item.normal?
                   item.sell_in -= 1
+                  if item.sell_in > 0
+                        item.quality -= 1
+                  else
+                        item.quality -= 2
+                  end
 
-                  item.quality -= 1 if item.sell_in < 0
-                  item.quality -= 1 if item.quality > 0
+                  item.quality = 0 if item.quality < 0
+                  item.quality = 50 if item.quality > 50
+
                   item = gr_item.to_item
             end
 
             if gr_item.aged_brie?
                   item.sell_in -= 1
-
                   if item.quality < 50
                         if item.sell_in < 0
                               item.quality += 2
@@ -100,6 +131,8 @@ def update_quality(items)
                               item.quality += 1
                         end
                   end
+
+                  item = gr_item.to_item
             end
 
             if gr_item.backstage?
@@ -114,7 +147,7 @@ def update_quality(items)
                               item.quality += 1
                         end
                   end
-            
+
                   if item.sell_in < 0
                         item.quality = 0
                         if item.quality > 0
@@ -122,7 +155,7 @@ def update_quality(items)
                         end
                   end
             end
-            
+
             if gr_item.sulfuras?
                   if item.quality < 50
                         item.quality += 1
