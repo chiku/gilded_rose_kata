@@ -69,12 +69,10 @@ module GildedRose
   class AgedBrie < Item
     def age
       @sell_in -= 1
-      if @quality < 50
-        if @sell_in < 0
-          @quality += 2
-        else
-          @quality += 1
-        end
+      if @sell_in < 0
+        @quality += 2
+      else
+        @quality += 1
       end
       normalize
       self
@@ -89,6 +87,24 @@ module GildedRose
     def backstage? # :TBD:
       true
     end
+
+    def age
+      @sell_in -= 1
+      if 10 <= @sell_in
+        @quality += 1
+      end
+      if 5 <= @sell_in && @sell_in < 10
+        @quality += 2
+      end
+      if 0 <= @sell_in && @sell_in < 5
+        @quality += 3
+      end
+      if @sell_in < 0
+        @quality = 0
+      end
+      normalize
+      self
+    end
   end
 
   class SulfurasItem < Item
@@ -97,8 +113,6 @@ module GildedRose
     end
 
     def age
-      @quality += 1
-      normalize
     end
   end
 end
@@ -124,13 +138,15 @@ def update_quality(items)
 
             if gr_item.aged_brie?
                   item.sell_in -= 1
-                  if item.quality < 50
-                        if item.sell_in < 0
-                              item.quality += 2
-                        else
-                              item.quality += 1
-                        end
+
+                  if item.sell_in >= 0
+                        item.quality += 1
+                  else
+                        item.quality += 2
                   end
+
+                  item.quality = 0 if item.quality < 0
+                  item.quality = 50 if item.quality > 50
 
                   item = gr_item.to_item
             end
@@ -138,28 +154,27 @@ def update_quality(items)
             if gr_item.backstage?
                   item.sell_in -= 1
 
-                  if item.quality < 50
+                  if 10 <= item.sell_in
                         item.quality += 1
-                        if item.sell_in < 10
-                              item.quality += 1
-                        end
-                        if item.sell_in < 5
-                              item.quality += 1
-                        end
                   end
-
+                  if 5 <= item.sell_in && item.sell_in < 10
+                        item.quality += 2
+                  end
+                  if 0 <= item.sell_in && item.sell_in < 5
+                        item.quality += 3
+                  end
                   if item.sell_in < 0
                         item.quality = 0
-                        if item.quality > 0
-                              item.quality -= 1
-                        end
                   end
+
+                  item.quality = 0 if item.quality < 0
+                  item.quality = 50 if item.quality > 50
+
+                  item = gr_item.to_item
             end
 
             if gr_item.sulfuras?
-                  if item.quality < 50
-                        item.quality += 1
-                  end
+                  item = gr_item.to_item
             end
       end
 end
