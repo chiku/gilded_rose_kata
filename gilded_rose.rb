@@ -56,11 +56,13 @@ module GildedRose
   class NormalItem < Item
     def age
       @sell_in -= 1
+
       if @sell_in > 0
         @quality -= 1
       else
         @quality -= 2
       end
+
       normalize
       self
     end
@@ -73,11 +75,13 @@ module GildedRose
   class AgedBrie < Item
     def age
       @sell_in -= 1
-      if @sell_in < 0
-        @quality += 2
-      else
+
+      if @sell_in >= 0
         @quality += 1
+      else
+        @quality += 2
       end
+
       normalize
       self
     end
@@ -94,18 +98,17 @@ module GildedRose
 
     def age
       @sell_in -= 1
+
       if 10 <= @sell_in
         @quality += 1
-      end
-      if 5 <= @sell_in && @sell_in < 10
+      elsif 5 <= @sell_in && @sell_in < 10
         @quality += 2
-      end
-      if 0 <= @sell_in && @sell_in < 5
+      elsif 0 <= @sell_in && @sell_in < 5
         @quality += 3
-      end
-      if @sell_in < 0
+      elsif @sell_in < 0
         @quality = 0
       end
+
       normalize
       self
     end
