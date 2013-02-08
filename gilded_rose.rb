@@ -1,49 +1,89 @@
-def update_quality(items)
-  items.each do |item|
-    if item.name != 'Aged Brie' && item.name != 'Backstage passes to a TAFKAL80ETC concert'
-      if item.quality > 0
-        if item.name != 'Sulfuras, Hand of Ragnaros'
-          item.quality -= 1
-        end
-      end
+class ItemUpdater
+  def update(item)
+    updater_for(item).update
+  end
+  
+  def updater_for(item)
+    if item.name.start_with? 'Aged Brie'
+      NoopItemUpdater.new(item)
+    elsif item.name.start_with? 'Backstage pass'
+      NoopItemUpdater.new(item)
+    elsif item.name.start_with? 'Sulfuras'
+      NoopItemUpdater.new(item)
     else
-      if item.quality < 50
-        item.quality += 1
-        if item.name == 'Backstage passes to a TAFKAL80ETC concert'
-          if item.sell_in < 11
-            if item.quality < 50
-              item.quality += 1
-            end
-          end
-          if item.sell_in < 6
-            if item.quality < 50
-              item.quality += 1
-            end
-          end
-        end
-      end
-    end
-    if item.name != 'Sulfuras, Hand of Ragnaros'
-      item.sell_in -= 1
-    end
-    if item.sell_in < 0
-      if item.name != "Aged Brie"
-        if item.name != 'Backstage passes to a TAFKAL80ETC concert'
-          if item.quality > 0
-            if item.name != 'Sulfuras, Hand of Ragnaros'
-              item.quality -= 1
-            end
-          end
-        else
-          item.quality = item.quality - item.quality
-        end
-      else
-        if item.quality < 50
-          item.quality += 1
-        end
-      end
+      NormalItemUpdater.new(item)
     end
   end
+end
+
+class NormalItemUpdater
+  def initialize(item)
+    @item = item
+  end
+
+  def update
+    @item.quality -= 1 if @item.quality > 0
+  end
+end
+
+class NoopItemUpdater
+  def initialize(item)
+    @item = item
+  end
+
+  def update
+  end
+end
+
+def update_quality(items)
+  items.each { |item| ItemUpdater.new.update(item) }
+  
+  
+      items.each do |item|
+            if item.name != 'Aged Brie' && item.name != 'Backstage passes to a TAFKAL80ETC concert'
+                  # if item.quality > 0
+                        # if item.name != 'Sulfuras, Hand of Ragnaros'
+                              # item.quality -= 1
+                        # end
+                  # end
+            else
+                  if item.quality < 50
+                        item.quality += 1
+                        if item.name == 'Backstage passes to a TAFKAL80ETC concert'
+                              if item.sell_in < 11
+                                    if item.quality < 50
+                                          item.quality += 1
+                                    end
+                              end
+                              if item.sell_in < 6
+                                    if item.quality < 50
+                                          item.quality += 1
+                                    end
+                              end
+                        end
+                  end
+            end
+            if item.name != 'Sulfuras, Hand of Ragnaros'
+                  item.sell_in -= 1
+            end
+            if item.sell_in < 0
+                  if item.name != "Aged Brie"
+                        if item.name != 'Backstage passes to a TAFKAL80ETC concert'
+                              if item.quality > 0
+                                    if item.name != 'Sulfuras, Hand of Ragnaros'
+                                          item.quality -= 1
+                                    end
+                              end
+                        else
+                              item.quality = 0
+                        end
+                  else
+                        if item.quality < 50
+                              item.quality += 1
+                        end
+                  end
+            end
+      end
 end
 
 # DO NOT CHANGE THINGS BELOW -----------------------------------------
