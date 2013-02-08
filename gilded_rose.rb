@@ -6,14 +6,14 @@ module GildedRose
 
     def self.for(name, sell_in, quality)
       if name.start_with? 'Aged Brie'
-        AgedBrie.new(name, sell_in, quality)
+        AgedBrie
       elsif name.start_with? 'Backstage pass'
-        BackstageItem.new(name, sell_in, quality)
+        BackstageItem
       elsif name.start_with? 'Sulfuras'
-        SulfurasItem.new(name, sell_in, quality)
+        SulfurasItem
       else
-        NormalItem.new(name, sell_in, quality)
-      end
+        NormalItem
+      end.new(name, sell_in, quality)
     end
 
     def initialize(name, sell_in, quality)
