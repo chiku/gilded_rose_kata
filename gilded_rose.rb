@@ -93,14 +93,10 @@ def update_quality(items)
                         item.quality += 1
                         if gr_item.backstage?
                               if item.sell_in < 11
-                                    if item.quality < 50
-                                          item.quality += 1
-                                    end
+                                    item.quality += 1
                               end
                               if item.sell_in < 6
-                                    if item.quality < 50
-                                          item.quality += 1
-                                    end
+                                    item.quality += 1
                               end
                         end
                   end
@@ -110,19 +106,19 @@ def update_quality(items)
                   end
             
                   if item.sell_in < 0
-                        if !gr_item.aged_brie?
-                              if !gr_item.backstage?
-                                    if item.quality > 0
-                                          if !gr_item.sulfuras?
-                                                item.quality -= 1
-                                          end
-                                    end
-                              else
-                                    item.quality = 0
+                        if gr_item.aged_brie?
+                              if item.quality < 50
+                                  item.quality += 1
                               end
                         else
-                              if item.quality < 50
-                                    item.quality += 1
+                              if gr_item.backstage?
+                                    item.quality = 0
+                              else
+                                    if item.quality > 0
+                                          if !gr_item.sulfuras?
+                                              item.quality -= 1
+                                          end
+                                    end
                               end
                         end
                   end
