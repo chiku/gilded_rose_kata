@@ -26,30 +26,9 @@ module GildedRose
       ::Item.new(@name, @sell_in, @quality)
     end
 
-    def age
-      #no-op
-      self
-    end
-
     def normalize
       @quality = 0 if @quality < 0
       @quality = 50 if @quality > 50
-    end
-
-    def normal? # :TBD:
-      false
-    end
-
-    def aged_brie? # :TBD:
-      false
-    end
-
-    def backstage? # :TBD:
-      false
-    end
-
-    def sulfuras? # :TBD:
-      false
     end
   end
 
@@ -66,10 +45,6 @@ module GildedRose
       normalize
       self
     end
-
-    def normal? # :TBD:
-      true
-    end
   end
 
   class AgedBrie < Item
@@ -85,17 +60,9 @@ module GildedRose
       normalize
       self
     end
-
-    def aged_brie? # :TBD:
-      true
-    end
   end
 
   class BackstageItem < Item
-    def backstage? # :TBD:
-      true
-    end
-
     def age
       @sell_in -= 1
 
@@ -115,10 +82,6 @@ module GildedRose
   end
 
   class SulfurasItem < Item
-    def sulfuras? # :TBD:
-      true
-    end
-
     def age
       self
     end
