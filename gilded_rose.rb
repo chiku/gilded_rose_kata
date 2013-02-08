@@ -84,36 +84,37 @@ def update_quality(items)
 
             if gr_item.normal?
                   item.sell_in -= 1
+
                   item.quality -= 1 if item.sell_in < 0
                   item.quality -= 1 if item.quality > 0
                   item = gr_item.to_item
             end
 
             if gr_item.aged_brie?
-                  if item.quality < 50
-                        item.quality += 1
-                  end
-
                   item.sell_in -= 1
-                  if item.sell_in < 0
-                        if item.quality < 50
+
+                  if item.quality < 50
+                        if item.sell_in < 0
+                              item.quality += 2
+                        else
                               item.quality += 1
                         end
                   end
             end
 
             if gr_item.backstage?
+                  item.sell_in -= 1
+
                   if item.quality < 50
                         item.quality += 1
-                        if item.sell_in < 11
+                        if item.sell_in < 10
                               item.quality += 1
                         end
-                        if item.sell_in < 6
+                        if item.sell_in < 5
                               item.quality += 1
                         end
                   end
             
-                  item.sell_in -= 1
                   if item.sell_in < 0
                         item.quality = 0
                         if item.quality > 0
