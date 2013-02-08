@@ -11,7 +11,7 @@ module GildedRose
         NormalItem.new(name, sell_in, quality)
       end
     end
-    
+
     def initialize(name, sell_in, quality)
       @name = name
       @sell_in = sell_in
@@ -46,9 +46,9 @@ module GildedRose
 
   class NormalItem < Item
     def age
-      @quality -= 1 if @sell_in <= 0
-      @quality -= 1 if @quality > 0
       @sell_in -= 1
+      @quality -= 1 if @sell_in < 0
+      @quality -= 1 if @quality > 0
 
       self
     end
@@ -69,7 +69,7 @@ module GildedRose
       true
     end
   end
-  
+
   class SulfurasItem < Item
     def sulfuras? # :TBD:
       true
@@ -83,9 +83,10 @@ def update_quality(items)
             gr_item.age
 
             if gr_item.normal?
-                  item.quality -= 1 if item.sell_in <= 0
-                  item.quality -= 1 if item.quality > 0
                   item.sell_in -= 1
+                  item.quality -= 1 if item.sell_in < 0
+                  item.quality -= 1 if item.quality > 0
+                  item = gr_item.to_item
             end
 
             if !gr_item.normal?
@@ -101,24 +102,21 @@ def update_quality(items)
                         end
                   end
 
-                  if !gr_item.sulfuras?
+                  if gr_item.aged_brie?
                         item.sell_in -= 1
-                  end
-            
-                  if item.sell_in < 0
-                        if gr_item.aged_brie?
+                        if item.sell_in < 0
                               if item.quality < 50
-                                  item.quality += 1
+                                    item.quality += 1
                               end
-                        else
-                              if gr_item.backstage?
-                                    item.quality = 0
-                              else
-                                    if item.quality > 0
-                                          if !gr_item.sulfuras?
-                                              item.quality -= 1
-                                          end
-                                    end
+                        end
+                  end
+
+                  if gr_item.backstage?
+                        item.sell_in -= 1
+                        if item.sell_in < 0
+                              item.quality = 0
+                              if item.quality > 0
+                                    item.quality -= 1
                               end
                         end
                   end
