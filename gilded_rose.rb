@@ -1,20 +1,17 @@
 module GildedRose
-  # merge as a class method on Item
-  class ItemFactory
-    def initialize(name, sell_in, quality)
+  class Item
+    def self.for(name, sell_in, quality)
       if name.start_with? 'Aged Brie'
-        Item.new(name, sell_in, quality)
+        AgedBrie.new(name, sell_in, quality)
       elsif name.start_with? 'Backstage pass'
-        Item.new(name, sell_in, quality)
+        BackstageItem.new(name, sell_in, quality)
       elsif name.start_with? 'Sulfuras'
-        Item.new(name, sell_in, quality)
+        SulfurasItem.new(name, sell_in, quality)
       else
         NormalItem.new(name, sell_in, quality)
       end
     end
-  end
-
-  class Item
+    
     def initialize(name, sell_in, quality)
       @name = name
       @sell_in = sell_in
@@ -29,28 +26,72 @@ module GildedRose
       #no-op
       self
     end
+
+    def normal? # :TBD:
+      false
+    end
+
+    def aged_brie? # :TBD:
+      false
+    end
+
+    def backstage? # :TBD:
+      false
+    end
+
+    def sulfuras? # :TBD:
+      false
+    end
   end
 
   class NormalItem < Item
     def age
+      @quality -= 1 if @sell_in <= 0
       @quality -= 1 if @quality > 0
+      @sell_in -= 1
+
       self
+    end
+
+    def normal? # :TBD:
+      true
+    end
+  end
+
+  class AgedBrie < Item
+    def aged_brie? # :TBD:
+      true
+    end
+  end
+
+  class BackstageItem < Item
+    def backstage? # :TBD:
+      true
+    end
+  end
+  
+  class SulfurasItem < Item
+    def sulfuras? # :TBD:
+      true
     end
   end
 end
 
 def update_quality(items)
       items.each do |item|
-            if item.name != 'Aged Brie' && item.name != 'Backstage passes to a TAFKAL80ETC concert'
-                  if item.quality > 0
-                        if item.name != 'Sulfuras, Hand of Ragnaros'
-                              item.quality = GildedRose::NormalItem.new(item.name, item.sell_in, item.quality).age.to_item.quality
-                        end
-                  end
-            else
+            gr_item = GildedRose::Item.for(item.name, item.sell_in, item.quality)
+            gr_item.age
+
+            if gr_item.normal?
+                  item.quality -= 1 if item.sell_in <= 0
+                  item.quality -= 1 if item.quality > 0
+                  item.sell_in -= 1
+            end
+
+            if !gr_item.normal?
                   if item.quality < 50
                         item.quality += 1
-                        if item.name == 'Backstage passes to a TAFKAL80ETC concert'
+                        if gr_item.backstage?
                               if item.sell_in < 11
                                     if item.quality < 50
                                           item.quality += 1
@@ -63,24 +104,26 @@ def update_quality(items)
                               end
                         end
                   end
-            end
-            if item.name != 'Sulfuras, Hand of Ragnaros'
-                  item.sell_in -= 1
-            end
-            if item.sell_in < 0
-                  if item.name != "Aged Brie"
-                        if item.name != 'Backstage passes to a TAFKAL80ETC concert'
-                              if item.quality > 0
-                                    if item.name != 'Sulfuras, Hand of Ragnaros'
-                                          item.quality -= 1
+
+                  if !gr_item.sulfuras?
+                        item.sell_in -= 1
+                  end
+            
+                  if item.sell_in < 0
+                        if !gr_item.aged_brie?
+                              if !gr_item.backstage?
+                                    if item.quality > 0
+                                          if !gr_item.sulfuras?
+                                                item.quality -= 1
+                                          end
                                     end
+                              else
+                                    item.quality = 0
                               end
                         else
-                              item.quality = 0
-                        end
-                  else
-                        if item.quality < 50
-                              item.quality += 1
+                              if item.quality < 50
+                                    item.quality += 1
+                              end
                         end
                   end
             end
@@ -101,4 +144,3 @@ Item = Struct.new(:name, :sell_in, :quality)
 #   Item.new("Backstage passes to a TAFKAL80ETC concert", 15, 20),
 #   Item.new("Conjured Mana Cake", 3, 6),
 # ]
-
