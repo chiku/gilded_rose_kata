@@ -89,10 +89,10 @@ def update_quality(items)
                   item = gr_item.to_item
             end
 
-            if !gr_item.normal?
+            if gr_item.aged_brie?
                   if item.quality < 50
                         item.quality += 1
-                        if gr_item.backstage?
+                        if false
                               if item.sell_in < 11
                                     item.quality += 1
                               end
@@ -102,7 +102,7 @@ def update_quality(items)
                         end
                   end
 
-                  if gr_item.aged_brie?
+                  if true
                         item.sell_in -= 1
                         if item.sell_in < 0
                               if item.quality < 50
@@ -111,7 +111,73 @@ def update_quality(items)
                         end
                   end
 
-                  if gr_item.backstage?
+                  if false
+                        item.sell_in -= 1
+                        if item.sell_in < 0
+                              item.quality = 0
+                              if item.quality > 0
+                                    item.quality -= 1
+                              end
+                        end
+                  end
+            end
+
+            if gr_item.backstage?
+                  if item.quality < 50
+                        item.quality += 1
+                        if true
+                              if item.sell_in < 11
+                                    item.quality += 1
+                              end
+                              if item.sell_in < 6
+                                    item.quality += 1
+                              end
+                        end
+                  end
+            
+                  if false
+                        item.sell_in -= 1
+                        if item.sell_in < 0
+                              if item.quality < 50
+                                    item.quality += 1
+                              end
+                        end
+                  end
+            
+                  if true
+                        item.sell_in -= 1
+                        if item.sell_in < 0
+                              item.quality = 0
+                              if item.quality > 0
+                                    item.quality -= 1
+                              end
+                        end
+                  end
+            end
+            
+            if gr_item.sulfuras?
+                  if item.quality < 50
+                        item.quality += 1
+                        if false
+                              if item.sell_in < 11
+                                    item.quality += 1
+                              end
+                              if item.sell_in < 6
+                                    item.quality += 1
+                              end
+                        end
+                  end
+            
+                  if false
+                        item.sell_in -= 1
+                        if item.sell_in < 0
+                              if item.quality < 50
+                                    item.quality += 1
+                              end
+                        end
+                  end
+            
+                  if false
                         item.sell_in -= 1
                         if item.sell_in < 0
                               item.quality = 0
