@@ -1,5 +1,9 @@
 module GildedRose
   class Item
+    def self.age(item)
+      Item.for(item.name, item.sell_in, item.quality).age.to_item
+    end
+
     def self.for(name, sell_in, quality)
       if name.start_with? 'Aged Brie'
         AgedBrie.new(name, sell_in, quality)
@@ -113,70 +117,17 @@ module GildedRose
     end
 
     def age
+      self
     end
   end
 end
 
 def update_quality(items)
-      items.each do |item|
-            gr_item = GildedRose::Item.for(item.name, item.sell_in, item.quality)
-            gr_item.age
-
-            if gr_item.normal?
-                  item.sell_in -= 1
-                  if item.sell_in > 0
-                        item.quality -= 1
-                  else
-                        item.quality -= 2
-                  end
-
-                  item.quality = 0 if item.quality < 0
-                  item.quality = 50 if item.quality > 50
-
-                  item = gr_item.to_item
-            end
-
-            if gr_item.aged_brie?
-                  item.sell_in -= 1
-
-                  if item.sell_in >= 0
-                        item.quality += 1
-                  else
-                        item.quality += 2
-                  end
-
-                  item.quality = 0 if item.quality < 0
-                  item.quality = 50 if item.quality > 50
-
-                  item = gr_item.to_item
-            end
-
-            if gr_item.backstage?
-                  item.sell_in -= 1
-
-                  if 10 <= item.sell_in
-                        item.quality += 1
-                  end
-                  if 5 <= item.sell_in && item.sell_in < 10
-                        item.quality += 2
-                  end
-                  if 0 <= item.sell_in && item.sell_in < 5
-                        item.quality += 3
-                  end
-                  if item.sell_in < 0
-                        item.quality = 0
-                  end
-
-                  item.quality = 0 if item.quality < 0
-                  item.quality = 50 if item.quality > 50
-
-                  item = gr_item.to_item
-            end
-
-            if gr_item.sulfuras?
-                  item = gr_item.to_item
-            end
-      end
+  items.each do |item|
+    aged_item = GildedRose::Item.age(item)
+    item.quality = aged_item.quality
+    item.sell_in = aged_item.sell_in
+  end
 end
 
 # DO NOT CHANGE THINGS BELOW -----------------------------------------
