@@ -1,51 +1,52 @@
-class ItemUpdater
-  def update(item)
-    updater_for(item).update
+module GildedRose
+  # merge as a class method on Item
+  class ItemFactory
+    def initialize(name, sell_in, quality)
+      if name.start_with? 'Aged Brie'
+        Item.new(name, sell_in, quality)
+      elsif name.start_with? 'Backstage pass'
+        Item.new(name, sell_in, quality)
+      elsif name.start_with? 'Sulfuras'
+        Item.new(name, sell_in, quality)
+      else
+        NormalItem.new(name, sell_in, quality)
+      end
+    end
   end
-  
-  def updater_for(item)
-    if item.name.start_with? 'Aged Brie'
-      NoopItemUpdater.new(item)
-    elsif item.name.start_with? 'Backstage pass'
-      NoopItemUpdater.new(item)
-    elsif item.name.start_with? 'Sulfuras'
-      NoopItemUpdater.new(item)
-    else
-      NormalItemUpdater.new(item)
+
+  class Item
+    def initialize(name, sell_in, quality)
+      @name = name
+      @sell_in = sell_in
+      @quality = quality
+    end
+
+    def to_item
+      ::Item.new(@name, @sell_in, @quality)
+    end
+
+    def age
+      #no-op
+      self
+    end
+  end
+
+  class NormalItem < Item
+    def age
+      @quality -= 1 if @quality > 0
+      self
     end
   end
 end
 
-class NormalItemUpdater
-  def initialize(item)
-    @item = item
-  end
-
-  def update
-    @item.quality -= 1 if @item.quality > 0
-  end
-end
-
-class NoopItemUpdater
-  def initialize(item)
-    @item = item
-  end
-
-  def update
-  end
-end
-
 def update_quality(items)
-  items.each { |item| ItemUpdater.new.update(item) }
-  
-  
       items.each do |item|
             if item.name != 'Aged Brie' && item.name != 'Backstage passes to a TAFKAL80ETC concert'
-                  # if item.quality > 0
-                        # if item.name != 'Sulfuras, Hand of Ragnaros'
-                              # item.quality -= 1
-                        # end
-                  # end
+                  if item.quality > 0
+                        if item.name != 'Sulfuras, Hand of Ragnaros'
+                              item.quality = GildedRose::NormalItem.new(item.name, item.sell_in, item.quality).age.to_item.quality
+                        end
+                  end
             else
                   if item.quality < 50
                         item.quality += 1
