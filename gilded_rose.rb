@@ -40,16 +40,16 @@ module GildedRose
     def quality_minimum?
       @quality <= 0
     end
-  end
 
-  class NormalItem < Item
     def age
       reduce_sell_in_date
       modify_quality
       normalize
       self
     end
+  end
 
+  class NormalItem < Item
     def reduce_sell_in_date
       @sell_in -= 1
     end
@@ -64,13 +64,6 @@ module GildedRose
   end
 
   class AgedBrie < Item
-    def age
-      reduce_sell_in_date
-      modify_quality
-      normalize
-      self
-    end
-
     def reduce_sell_in_date
       @sell_in -= 1
     end
@@ -85,13 +78,6 @@ module GildedRose
   end
 
   class BackstageItem < Item
-    def age
-      reduce_sell_in_date
-      modify_quality
-      normalize
-      self
-    end
-
     def reduce_sell_in_date
       @sell_in -= 1
     end
@@ -110,13 +96,6 @@ module GildedRose
   end
 
   class SulfurasItem < Item
-    def age
-      reduce_sell_in_date
-      modify_quality
-      normalize
-      self
-    end
-
     def reduce_sell_in_date
     end
 
@@ -129,13 +108,6 @@ module GildedRose
   end
 
   class ConjuredItem < Item
-    def age
-      reduce_sell_in_date
-      modify_quality
-      normalize
-      self
-    end
-
     def reduce_sell_in_date
       @sell_in -= 1
     end
