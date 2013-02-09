@@ -18,6 +18,9 @@ module GildedRose
       end.new(name, sell_in, quality)
     end
 
+    MIN_QUALITY = 0
+    MAX_QUALITY = 50
+
     def initialize(name, sell_in, quality)
       @name = name
       @sell_in = sell_in
@@ -29,16 +32,29 @@ module GildedRose
     end
 
     def normalize
-      @quality = 0 if quality_minimum?
-      @quality = 50 if quality_maximum?
+      if quality_minimum?
+        @quality = MIN_QUALITY
+        seal_quality
+      end
+
+      if quality_maximum?
+        @quality = MAX_QUALITY
+        seal_quality
+      end
     end
 
     def quality_maximum?
-      @quality >= 50
+      @quality >= MAX_QUALITY
     end
 
     def quality_minimum?
-      @quality <= 0
+      @quality <= MIN_QUALITY
+    end
+
+    def seal_quality
+      def self.modify_quality
+        # no-op
+      end
     end
 
     def age
