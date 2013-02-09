@@ -9,6 +9,8 @@ module GildedRose
         AgedBrie
       elsif name.start_with? 'Backstage pass'
         BackstageItem
+      elsif name.start_with? 'Conjured'
+        ConjuredItem
       elsif name.start_with? 'Sulfuras'
         SulfurasItem
       else
@@ -83,6 +85,21 @@ module GildedRose
 
   class SulfurasItem < Item
     def age
+      self
+    end
+  end
+
+  class ConjuredItem < Item
+    def age
+      @sell_in -= 1
+
+      if @sell_in > 0
+        @quality -= 2
+      else
+        @quality -= 4
+      end
+
+      normalize
       self
     end
   end
