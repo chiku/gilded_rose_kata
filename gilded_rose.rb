@@ -1,21 +1,23 @@
 module GildedRose
   class Item
-    def self.age(item)
-      Item.for(item.name, item.sell_in, item.quality).age.to_item
-    end
+    class << self
+      def age(item)
+        Item.for(item.name, item.sell_in, item.quality).age.to_item
+      end
 
-    def self.for(name, sell_in, quality)
-      if name.start_with? 'Aged Brie'
-        AgedBrie
-      elsif name.start_with? 'Backstage pass'
-        BackstageItem
-      elsif name.start_with? 'Conjured'
-        ConjuredItem
-      elsif name.start_with? 'Sulfuras'
-        SulfurasItem
-      else
-        NormalItem
-      end.new(name, sell_in, quality)
+      def for(name, sell_in, quality)
+        if name.start_with? 'Aged Brie'
+          AgedBrie
+        elsif name.start_with? 'Backstage pass'
+          BackstagePass
+        elsif name.start_with? 'Conjured'
+          ConjuredItem
+        elsif name.start_with? 'Sulfuras'
+          Sulfuras
+        else
+          NormalItem
+        end.new(name, sell_in, quality)
+      end
     end
 
     MIN_QUALITY = 0
@@ -93,7 +95,7 @@ module GildedRose
     end
   end
 
-  class BackstageItem < Item
+  class BackstagePass < Item
     def reduce_sell_in_date
       @sell_in -= 1
     end
@@ -111,7 +113,7 @@ module GildedRose
     end
   end
 
-  class SulfurasItem < Item
+  class Sulfuras < Item
     def reduce_sell_in_date
     end
 
