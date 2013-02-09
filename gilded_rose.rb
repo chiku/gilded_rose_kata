@@ -45,19 +45,21 @@ module GildedRose
   class NormalItem < Item
     def age
       reduce_sell_in_date
-
-      if @sell_in > 0
-        @quality -= 1
-      else
-        @quality -= 2
-      end
-
+      modify_quality
       normalize
       self
     end
 
     def reduce_sell_in_date
       @sell_in -= 1
+    end
+
+    def modify_quality
+      if @sell_in > 0
+        @quality -= 1
+      else
+        @quality -= 2
+      end
     end
   end
 
@@ -83,7 +85,16 @@ module GildedRose
   class BackstageItem < Item
     def age
       reduce_sell_in_date
+      modify_quality
+      normalize
+      self
+    end
 
+    def reduce_sell_in_date
+      @sell_in -= 1
+    end
+
+    def modify_quality
       if 10 <= @sell_in
         @quality += 1
       elsif 5 <= @sell_in && @sell_in < 10
@@ -93,38 +104,41 @@ module GildedRose
       elsif @sell_in < 0
         @quality = 0
       end
-
-      normalize
-      self
-    end
-
-    def reduce_sell_in_date
-      @sell_in -= 1
     end
   end
 
   class SulfurasItem < Item
     def age
+      reduce_sell_in_date
+      modify_quality
       self
+    end
+
+    def reduce_sell_in_date
+    end
+
+    def modify_quality
     end
   end
 
   class ConjuredItem < Item
     def age
       reduce_sell_in_date
-
-      if @sell_in > 0
-        @quality -= 2
-      else
-        @quality -= 4
-      end
-
+      modify_quality
       normalize
       self
     end
 
     def reduce_sell_in_date
       @sell_in -= 1
+    end
+
+    def modify_quality
+      if @sell_in > 0
+        @quality -= 2
+      else
+        @quality -= 4
+      end
     end
   end
 end
