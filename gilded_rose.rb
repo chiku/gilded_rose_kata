@@ -66,19 +66,21 @@ module GildedRose
   class AgedBrie < Item
     def age
       reduce_sell_in_date
-
-      if @sell_in >= 0
-        @quality += 1
-      else
-        @quality += 2
-      end
-
+      modify_quality
       normalize
       self
     end
 
     def reduce_sell_in_date
       @sell_in -= 1
+    end
+
+    def modify_quality
+      if @sell_in >= 0
+        @quality += 1
+      else
+        @quality += 2
+      end
     end
   end
 
@@ -111,6 +113,7 @@ module GildedRose
     def age
       reduce_sell_in_date
       modify_quality
+      normalize
       self
     end
 
@@ -118,6 +121,10 @@ module GildedRose
     end
 
     def modify_quality
+    end
+
+    def quality_maximum?
+      false
     end
   end
 
