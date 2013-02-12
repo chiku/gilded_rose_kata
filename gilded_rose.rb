@@ -1,10 +1,6 @@
 module GildedRose
   class Item
     class << self
-      def age(item)
-        Item.for(item.name, item.sell_in, item.quality).age.to_item
-      end
-
       def for(name, sell_in, quality)
         if name.start_with? 'Aged Brie'
           AgedBrie
@@ -18,19 +14,20 @@ module GildedRose
           NormalItem
         end.new(name, sell_in, quality)
       end
+
+      protected :new
     end
 
     MIN_QUALITY = 0
     MAX_QUALITY = 50
 
+    attr_reader :sell_in
+    attr_reader :quality
+
     def initialize(name, sell_in, quality)
       @name = name
       @sell_in = sell_in
       @quality = quality
-    end
-
-    def to_item
-      ::Item.new(@name, @sell_in, @quality)
     end
 
     def normalize
@@ -142,7 +139,7 @@ end
 
 def update_quality(items)
   items.each do |item|
-    aged_item = GildedRose::Item.age(item)
+    aged_item = GildedRose::Item.for(item.name, item.sell_in, item.quality).age
     item.quality = aged_item.quality
     item.sell_in = aged_item.sell_in
   end
